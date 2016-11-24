@@ -1,5 +1,5 @@
 //=============================================//
-// Copyright - Emil Pirinen 2016 (16i260a)	   //
+// Copyright - Emil Pirinen 2016 (16i260a)     //
 // Ohjelmointikielet, perusteet - harjoitustyö //
 //=============================================//
 
@@ -82,7 +82,7 @@ void arvo_lottorivi(short oikea_rivi[], short oikea_lisrivi[]) {
 	oikea_lisrivi[1] = lottonumerot[30]; // 2. lisänumero = 30. alkio
 	bubble_sort(oikea_lisrivi, LISANUMEROT_KOKO); // järjestetään alkiot nousevaan järjestykseen
 }
-
+//
 void kysy_lottorivi(short taul[], short rivi_size) {
 	for (int i = 0; i < rivi_size; i++) {
 		do {
@@ -95,7 +95,7 @@ void kysy_lottorivi(short taul[], short rivi_size) {
 		} while (taul[i] < 1 || taul[i] > 39);
 	}
 }
-
+//
 void oikean_lottorivin_arvonta() {
 	// Oikean lottorivin arvonta
 	short oikea_lottorivi[LOTTORIVI_KOKO];
@@ -110,7 +110,7 @@ void oikean_lottorivin_arvonta() {
 	cout << endl << " Lisanumerot: ";
 	cout << oikea_lottorivi_lisanumerot[0] << " " << oikea_lottorivi_lisanumerot[1] << endl << endl;
 }
-
+//
 void yhden_rivin_lotto() {
 	// Yhden rivin lotto
 	short tulos = 0;
@@ -133,14 +133,18 @@ void yhden_rivin_lotto() {
 	// Pisteiden laskenta
 	for (int i = 0; i < LOTTORIVI_KOKO; i++) {
 		int x = 0;
+		int y = 0;
 		while (x < LOTTORIVI_KOKO) {
 			if (oikea_rivi[i] == user_rivi[x]) {
 				tulos++;
 			}
-			if (oikea_lisrivi[i] == user_rivi[x]) { // Tarkistetaan samalla löytyykö numero lisänumeroista
+			x++;
+		}
+		while (y < LISANUMEROT_KOKO) { // Tarkistetaan löytyykö numero lisänumeroista
+			if (oikea_lisrivi[y] == user_rivi[i]) {
 				tulos_lis++;
 			}
-			x++;
+			y++;
 		}
 	}
 	// Tulostukset
@@ -163,7 +167,7 @@ void yhden_rivin_lotto() {
 	}
 	cout << endl;
 	if (tulos < 4) {
-		cout << endl << "Tulos: ei voittoa" << endl << endl;
+		cout << endl << "Ei voittoa (" << tulos << " + " << tulos_lis << " oikein)" << endl << endl;
 	}
 	else if (tulos == 6 && tulos_lis == 1) {
 		cout << endl << "Tulos: " << tulos << " + " << tulos_lis << " oikein" << endl << endl;
@@ -172,7 +176,7 @@ void yhden_rivin_lotto() {
 		cout << endl << "Tulos: " << tulos << " oikein" << endl << endl;
 	}
 }
-
+//
 void yhden_rivin_lotto_arvotulla_tuloksella() {
 	// Yhden rivin lotto arvotulla tuloksella
 	short tulos = 0;
@@ -209,14 +213,18 @@ void yhden_rivin_lotto_arvotulla_tuloksella() {
 	// Pisteiden laskenta
 	for (int i = 0; i < LOTTORIVI_KOKO; i++) {
 		int x = 0;
+		int y = 0;
 		while (x < LOTTORIVI_KOKO) {
 			if (oikea_rivi[i] == user_rivi[x]) {
 				tulos++;
 			}
-			if (oikea_lisrivi[i] == user_rivi[x]) { // Tarkistetaan samalla löytyykö numero lisänumeroista
+			x++;
+		}
+		while (y < LISANUMEROT_KOKO) { // Tarkistetaan löytyykö numero lisänumeroista
+			if (oikea_lisrivi[y] == user_rivi[i]) { 
 				tulos_lis++;
 			}
-			x++;
+			y++;
 		}
 	}
 	cout << endl;
@@ -231,11 +239,11 @@ void yhden_rivin_lotto_arvotulla_tuloksella() {
 		cout << endl << tulos << " oikein" << endl << endl;
 	}
 }
-
+//
 void useamman_rivin_lotto_arvotulla_tuloksella() {
 	// Useamman rivin lotto arvotulla tuloksella
 }
-
+//
 void yhden_rivin_jokeri() {
 	// Yhden rivin jokeri
 	short pisteet = 0;
@@ -272,7 +280,7 @@ void yhden_rivin_jokeri() {
 		cout << " Voitit!" << endl << endl;
 	}
 }
-
+//
 void kysy_jokeririvi(short taul[], short rivi_size) {
 	for (int i = 0; i < rivi_size; i++) {
 		do {
@@ -285,7 +293,7 @@ void kysy_jokeririvi(short taul[], short rivi_size) {
 		} while (taul[i] < 0 || taul[i] > 9);
 	}
 }
-
+//
 void tulostaValikko(char& valinta) {
 	// Tulostetaan valikko
 	cout << "Lottopelisimulaattori" << endl;
@@ -307,7 +315,7 @@ void tulostaValikko(char& valinta) {
 		}
 	} while (valinta != '1' && valinta != '2' && valinta != '3' && valinta != '4' && valinta != '5' && valinta != 'l' && valinta != 'L');
 }
-
+//
 void bubble_sort(short a[], int n) {
 	// Kuplalajittelualgoritmin ohjelmakoodi (valmiiksi annettu)
 	int	j, k;
@@ -335,7 +343,7 @@ void bubble_sort(short a[], int n) {
 		}
 	}
 }
-
+//
 void clearInput() {
 	// Tarkastetaan syöte ja käsitellään sen sisältö oikeanlaiseksi (poistetaan muuttujaan kuulumaton sisältö)
 	cin.clear();
