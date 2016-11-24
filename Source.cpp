@@ -18,6 +18,8 @@ void yhden_rivin_lotto_arvotulla_tuloksella();
 void useamman_rivin_lotto_arvotulla_tuloksella();
 void yhden_rivin_jokeri();
 void kysy_jokeririvi(short taul[], short rivi_size);
+void laske_pisteet(short& pts, short& pts_l, short oikea[], short oikea_l[], short user[]);
+void tulosta_pisteet(short pts, short pts_l);
 void tulostaValikko(char& valinta);
 void bubble_sort(short a[], int n);
 void clearInput();
@@ -86,13 +88,22 @@ void arvo_lottorivi(short oikea_rivi[], short oikea_lisrivi[]) {
 void kysy_lottorivi(short taul[], short rivi_size) {
 	for (int i = 0; i < rivi_size; i++) {
 		do {
+			int x = 0;
+			bool ex = false;
 			cout << "Anna " << i + 1 << ". numero: ";
 			cin >> taul[i];
 			clearInput();
-			if (taul[i] < 1 || taul[i] > 39) {
+			if (taul[i] < 1 || taul[i] > LOTTONUMEROT) {
 				cout << "Virhe! ";
 			}
-		} while (taul[i] < 1 || taul[i] > 39);
+			while (x < i) {
+				if (taul[i] == taul[x]) {
+					taul[i] = -1;
+					cout << "Numero loytyy jo! ";
+				}
+				x++;
+			}
+		} while (taul[i] < 1 || taul[i] > LOTTONUMEROT);
 	}
 }
 //
@@ -124,29 +135,40 @@ void yhden_rivin_lotto() {
 	bubble_sort(oikea_rivi, LOTTORIVI_KOKO);
 	// Lisänumerot
 	cout << endl << "Anna arvotut lisanumerot:" << endl;
-	kysy_lottorivi(oikea_lisrivi, LISANUMEROT_KOKO);
+	for (int i = 0; i < LISANUMEROT_KOKO; i++) {
+		do {
+			int x = 0;
+			int y = 0;
+			bool ex = false;
+			cout << "Anna " << i + 1 << ". numero: ";
+			cin >> oikea_lisrivi[i];
+			clearInput();
+			if (oikea_lisrivi[i] < 1 || oikea_lisrivi[i] > LOTTONUMEROT) {
+				cout << "Virhe! ";
+			}
+			while (x < i) {
+				if (oikea_lisrivi[i] == oikea_lisrivi[x]) {
+					oikea_lisrivi[i] = -1;
+					cout << "Numero loytyy jo! ";
+				}
+				x++;
+			}
+			while (y < LOTTORIVI_KOKO) {
+				if (oikea_lisrivi[i] == oikea_rivi[y]) {
+					oikea_lisrivi[i] = -1;
+					cout << "Numero loytyy jo! ";
+				}
+				y++;
+			}
+		} while (oikea_lisrivi[i] < 1 || oikea_lisrivi[i] > LOTTONUMEROT);
+	}
 	bubble_sort(oikea_lisrivi, LISANUMEROT_KOKO);
 	// Oma rivi
 	cout << endl << "Anna oma rivi:" << endl;
 	kysy_lottorivi(user_rivi, LOTTORIVI_KOKO);
 	bubble_sort(user_rivi, LOTTORIVI_KOKO);
 	// Pisteiden laskenta
-	for (int i = 0; i < LOTTORIVI_KOKO; i++) {
-		int x = 0;
-		int y = 0;
-		while (x < LOTTORIVI_KOKO) {
-			if (oikea_rivi[i] == user_rivi[x]) {
-				tulos++;
-			}
-			x++;
-		}
-		while (y < LISANUMEROT_KOKO) { // Tarkistetaan löytyykö numero lisänumeroista
-			if (oikea_lisrivi[y] == user_rivi[i]) {
-				tulos_lis++;
-			}
-			y++;
-		}
-	}
+	laske_pisteet(tulos, tulos_lis, oikea_rivi, oikea_lisrivi, user_rivi);
 	// Tulostukset
 	cout << endl << "Oikea lottorivi: ";
 	for (int i = 0; i < LOTTORIVI_KOKO; i++) {
@@ -166,15 +188,8 @@ void yhden_rivin_lotto() {
 		cout << user_rivi[i] << " ";
 	}
 	cout << endl;
-	if (tulos < 4) {
-		cout << endl << "Ei voittoa (" << tulos << " + " << tulos_lis << " oikein)" << endl << endl;
-	}
-	else if (tulos == 6 && tulos_lis == 1) {
-		cout << endl << "Tulos: " << tulos << " + " << tulos_lis << " oikein" << endl << endl;
-	}
-	else {
-		cout << endl << "Tulos: " << tulos << " oikein" << endl << endl;
-	}
+	// Pisteet
+	tulosta_pisteet(tulos, tulos_lis);
 }
 //
 void yhden_rivin_lotto_arvotulla_tuloksella() {
@@ -211,37 +226,78 @@ void yhden_rivin_lotto_arvotulla_tuloksella() {
 		cout << oikea_lisrivi[i] << " ";
 	}
 	// Pisteiden laskenta
-	for (int i = 0; i < LOTTORIVI_KOKO; i++) {
-		int x = 0;
-		int y = 0;
-		while (x < LOTTORIVI_KOKO) {
-			if (oikea_rivi[i] == user_rivi[x]) {
-				tulos++;
-			}
-			x++;
-		}
-		while (y < LISANUMEROT_KOKO) { // Tarkistetaan löytyykö numero lisänumeroista
-			if (oikea_lisrivi[y] == user_rivi[i]) { 
-				tulos_lis++;
-			}
-			y++;
-		}
-	}
+	laske_pisteet(tulos, tulos_lis, oikea_rivi, oikea_lisrivi, user_rivi);
 	cout << endl;
-	// Tulostukset
-	if (tulos < 4) {
-		cout << endl << "Ei voittoa (" << tulos << " + " << tulos_lis << " oikein)" << endl << endl;
-	}
-	else if (tulos == 6 && tulos_lis == 1) {
-		cout << endl << tulos << " + " << tulos_lis << " oikein" << endl << endl;
-	}
-	else {
-		cout << endl << tulos << " oikein" << endl << endl;
-	}
+	// Pisteet / voittoluokka
+	tulosta_pisteet(tulos, tulos_lis);
 }
 //
 void useamman_rivin_lotto_arvotulla_tuloksella() {
 	// Useamman rivin lotto arvotulla tuloksella
+	short rivi = 0;
+	short tulos = 0;
+	short tulos_lis = 0;
+	short oikea_rivi[LOTTORIVI_KOKO];
+	short oikea_lisrivi[LISANUMEROT_KOKO];
+	short user_temp[LOTTORIVI_KOKO];
+	short user_rivi[MAX_RIVIT][LOTTORIVI_KOKO];
+	// Arvotaan oikea lottorivi
+	arvo_lottorivi(oikea_rivi, oikea_lisrivi);
+	cout << endl << "Lottorivi arvottu lisanumeroineen." << endl;
+	// Käyttäjän syöttämät arvot
+	while (rivi < MAX_RIVIT) {
+		cout << endl << "Anna oma " << rivi+1 << ". rivi: " << endl;
+		kysy_lottorivi(user_temp, LOTTORIVI_KOKO);
+		bubble_sort(user_temp, LOTTORIVI_KOKO);
+		for (int i = 0; i < LOTTORIVI_KOKO; i++) {
+			user_rivi[rivi][i] = user_temp[i];
+		}
+		rivi++;
+	}
+	// Tulokset
+	cout << endl << "Tulos:" << endl;
+	cout << "Arvottu lottorivi: ";
+	for (int i = 0; i < LOTTORIVI_KOKO; i++) {
+		if (i == LOTTORIVI_KOKO - 1) {
+			cout << oikea_rivi[i];
+		}
+		else {
+			cout << oikea_rivi[i] << " ";
+		}
+	}
+	cout << ", lisanumerot: ";
+	for (int i = 0; i < LISANUMEROT_KOKO; i++) {
+		cout << oikea_lisrivi[i] << " ";
+	}
+	//
+	cout << endl << endl;
+	// Yhteenveto
+	for (int i = 0; i < MAX_RIVIT; i++) {
+		// Pisteiden laskenta
+		tulos = 0;
+		tulos_lis = 0;
+		for (int z = 0; z < LOTTORIVI_KOKO; z++) {
+			int x = 0;
+			int y = 0;
+			while (x < LOTTORIVI_KOKO) {
+				if (oikea_rivi[z] == user_rivi[i][x]) {
+					tulos++;
+				}
+				x++;
+			}
+			while (y < LISANUMEROT_KOKO) { // Tarkistetaan löytyykö numero lisänumeroista
+				if (oikea_lisrivi[y] == user_rivi[i][z]) {
+					tulos_lis++;
+				}
+				y++;
+			}
+		}
+		cout << i+1 << ". kayttajan rivi: ";
+		for (int x = 0; x < LOTTORIVI_KOKO; x++) {
+			cout << user_rivi[i][x] << " ";
+		}
+		tulosta_pisteet(tulos, tulos_lis);
+	}
 }
 //
 void yhden_rivin_jokeri() {
@@ -291,6 +347,39 @@ void kysy_jokeririvi(short taul[], short rivi_size) {
 				cout << "Virhe! ";
 			}
 		} while (taul[i] < 0 || taul[i] > 9);
+	}
+}
+//
+void laske_pisteet(short& pts, short& pts_l, short oikea[], short oikea_l[], short user[]) {
+	// Laske pisteet
+	for (int i = 0; i < LOTTORIVI_KOKO; i++) {
+		int x = 0;
+		int y = 0;
+		while (x < LOTTORIVI_KOKO) {
+			if (oikea[i] == user[x]) {
+				pts++;
+			}
+			x++;
+		}
+		while (y < LISANUMEROT_KOKO) { // Tarkistetaan löytyykö numero lisänumeroista
+			if (oikea_l[y] == user[i]) {
+				pts_l++;
+			}
+			y++;
+		}
+	}
+}
+//
+void tulosta_pisteet(short pts, short pts_l) {
+	// Tulosta pisteet / voittoluokka
+	if (pts < 4) {
+		cout << endl << "Ei voittoa (" << pts << " + " << pts_l << " oikein)" << endl << endl;
+	}
+	else if (pts == 6 && pts_l == 1) {
+		cout << endl << pts << " + " << pts_l << " oikein" << endl << endl;
+	}
+	else {
+		cout << endl << pts << " oikein" << endl << endl;
 	}
 }
 //
