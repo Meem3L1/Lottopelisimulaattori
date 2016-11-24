@@ -241,19 +241,30 @@ void useamman_rivin_lotto_arvotulla_tuloksella() {
 	short oikea_lisrivi[LISANUMEROT_KOKO];
 	short user_temp[LOTTORIVI_KOKO];
 	short user_rivi[MAX_RIVIT][LOTTORIVI_KOKO];
+	bool uusi_rivi = true;
 	// Arvotaan oikea lottorivi
 	arvo_lottorivi(oikea_rivi, oikea_lisrivi);
 	cout << endl << "Lottorivi arvottu lisanumeroineen." << endl;
 	// Käyttäjän syöttämät arvot
-	while (rivi < MAX_RIVIT) {
+	while (rivi < MAX_RIVIT && uusi_rivi) {
 		cout << endl << "Anna oma " << rivi+1 << ". rivi: " << endl;
 		kysy_lottorivi(user_temp, LOTTORIVI_KOKO);
 		bubble_sort(user_temp, LOTTORIVI_KOKO);
 		for (int i = 0; i < LOTTORIVI_KOKO; i++) {
 			user_rivi[rivi][i] = user_temp[i];
 		}
+		int c;
+		if (rivi < MAX_RIVIT - 1) {
+			cout << endl << "0 = ei, jokin muu = kylla" << endl;
+			cout << "Uusi rivi? ";
+			cin >> c;
+			clearInput();
+			if (c == 0) {
+				uusi_rivi = false;
+			}
+		}
 		rivi++;
-	}
+	} // end of while
 	// Tulokset
 	cout << endl << "Tulos:" << endl;
 	cout << "Arvottu lottorivi: ";
@@ -272,7 +283,7 @@ void useamman_rivin_lotto_arvotulla_tuloksella() {
 	//
 	cout << endl << endl;
 	// Yhteenveto
-	for (int i = 0; i < MAX_RIVIT; i++) {
+	for (int i = 0; i < rivi; i++) {
 		// Pisteiden laskenta
 		tulos = 0;
 		tulos_lis = 0;
