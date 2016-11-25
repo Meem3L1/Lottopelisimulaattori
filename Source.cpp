@@ -89,7 +89,6 @@ void kysy_lottorivi(short taul[], short rivi_size) {
 	for (int i = 0; i < rivi_size; i++) {
 		do {
 			int x = 0;
-			bool ex = false;
 			cout << "Anna " << i + 1 << ". numero: ";
 			cin >> taul[i];
 			clearInput();
@@ -248,22 +247,39 @@ void useamman_rivin_lotto_arvotulla_tuloksella() {
 	// Käyttäjän syöttämät arvot
 	while (rivi < MAX_RIVIT && uusi_rivi) {
 		cout << endl << "Anna oma " << rivi+1 << ". rivi: " << endl;
-		kysy_lottorivi(user_temp, LOTTORIVI_KOKO);
-		bubble_sort(user_temp, LOTTORIVI_KOKO);
-		for (int i = 0; i < LOTTORIVI_KOKO; i++) {
-			user_rivi[rivi][i] = user_temp[i];
+		// -----
+		for (int i = 0; i < LOTTORIVI_KOKO && uusi_rivi; i++) {
+			do {
+				int x = 0;
+				cout << "Anna " << i + 1 << ". numero: ";
+				cin >> user_temp[i];
+				clearInput();
+				if (user_temp[i] < 1 || user_temp[i] > LOTTONUMEROT) {
+					if (user_temp[0] != 0) {
+						cout << "Virhe! ";
+					}
+				}
+				if (user_temp[0] == 0) {
+					uusi_rivi = false;
+					break;
+				}
+				while (x < i && user_temp[0] != 0) {
+					if (user_temp[i] == user_temp[x]) {
+						user_temp[i] = -1;
+						cout << "Numero loytyy jo! ";
+					}
+					x++;
+				}
+			} while (user_temp[i] < 1 || user_temp[i] > LOTTONUMEROT && uusi_rivi);
 		}
-		int c;
-		if (rivi < MAX_RIVIT - 1) {
-			cout << endl << "0 = ei, jokin muu = kylla" << endl;
-			cout << "Uusi rivi? ";
-			cin >> c;
-			clearInput();
-			if (c == 0) {
-				uusi_rivi = false;
+		// -----
+		if (uusi_rivi) {
+			bubble_sort(user_temp, LOTTORIVI_KOKO);
+			for (int i = 0; i < LOTTORIVI_KOKO; i++) {
+				user_rivi[rivi][i] = user_temp[i];
 			}
+			rivi++;
 		}
-		rivi++;
 	} // end of while
 	// Tulokset
 	cout << endl << "Tulos:" << endl;
